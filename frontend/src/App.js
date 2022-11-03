@@ -9,7 +9,6 @@ import { Profile } from './components/SignupIn/Profile';
 import { ProductForm } from './components/Product/ProductForm';
 
 function App() {
-  const navigate = useNavigate();
   return (
       <BrowserRouter>
       <Header />
@@ -20,7 +19,6 @@ function App() {
           <Route exact path="/products" element={<ProductItems/>} /> 
           <Route exact path="/profile" element={<Profile/>} /> 
           <Route exact path="/addproduct" element={<ProductForm/>} /> 
-          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
         </BrowserRouter>
     )

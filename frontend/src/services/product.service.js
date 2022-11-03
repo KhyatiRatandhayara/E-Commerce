@@ -12,8 +12,20 @@ const createProduct = (product) => {
     });
   };
 
+const getAllProducts = () => {
+  return axios.get(API_URL + "allproducts");
+};
+
+const deleteProduct = (productId) => {
+  return axios.delete(`${API_URL}deleteproduct/${productId}`);
+};
+
+const getProductDetail =(productId) => {
+  return axios.get(`${API_URL}editproductdata/${productId}`);
+};
+
 const ProductService = {
-  createProduct
+  createProduct,getAllProducts, deleteProduct, getProductDetail
   }
   
   export default ProductService;

@@ -19,6 +19,9 @@ export const Header = () => {
         (<div className="navbar-nav mr-auto">
           <li className="nav-item active">
             <Link to={"/"} className="nav-link">
+            <span className="icon">
+              <i className="fas fa-home"></i>
+            </span>
               Home
             </Link>
           </li>
