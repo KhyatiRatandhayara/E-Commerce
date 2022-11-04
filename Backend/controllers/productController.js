@@ -44,9 +44,9 @@ const deleteProduct = async (req, res) => {
       }
   })
 }
-const editProductData = async (req, res) => {
+const getEditProductData = async (req, res) => {
   const productId = req.params.id;
-
+ 
   Product.findById(productId, (err, doc) => {
       if (!err) {
           res.status(200).json(doc);
@@ -57,4 +57,17 @@ const editProductData = async (req, res) => {
   })
 }
 
-export {createProduct,getAllProducts, deleteProduct, editProductData};
+const EditProduct = async (req, res) => {
+  const productId = req.params.id;
+  // const { productname, price, stock, description } = req.body;
+  console.log('req.body',req.body);
+  Product.findByIdAndUpdate(productId,{$set:req.body},{new:true}, function(err, result){
+    if(err){
+        console.log(err);
+    }
+    console.log("RESULT: " + result);
+    res.send('Done')
+});
+}
+
+export {createProduct,getAllProducts, deleteProduct, getEditProductData, EditProduct};

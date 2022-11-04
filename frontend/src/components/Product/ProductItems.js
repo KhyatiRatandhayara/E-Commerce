@@ -10,12 +10,15 @@ import { EditModal } from "./EditModal";
 export const ProductItems = () => {
 
     const [data, getData] = useState([]);
+    const [isDataUpdated, setIsDataUpdated] = useState([]);
+
     const [showDelete, setShowDelete] = useState(false);
     const [showEdit, setShowEdit] = useState(false);
     const [productData, getProductData] = useState({
         productId : null
     })
     const [productDetails, setProductDetails] = useState({
+        productId : null,
         productname: "",
         price: "",
         stock: "",
@@ -28,7 +31,8 @@ export const ProductItems = () => {
         ProductService.getAllProducts().then((response) => {
             getData(response.data);
         });
-      }, [data]);
+      }, [isDataUpdated]);
+
 
       const deleteHandler = (productId) => {
         setShowDelete(true);
@@ -39,13 +43,19 @@ export const ProductItems = () => {
       const closeDeleteModal = () => {
         setShowDelete(false);
       }
+      const closeEditModal = () => {
+        setShowEdit(false);
+      }
       const editHandler = (productId)=> {
-        ProductService.getProductDetail(productId).then((response) => {
+        ProductService.getEditProductDetail(productId).then((response) => {
             const {productname, price, stock, description} = response.data;
-            setProductDetails({productname, price, stock, description});
+            setProductDetails({productId,productname, price, stock, description});
             setShowEdit(true);
         });
-       
+      }
+
+      const changeDataDeleteOrEdit = () => {
+        setIsDataUpdated(data);
       }
 
     return (
@@ -87,8 +97,8 @@ export const ProductItems = () => {
             ))}
         </tbody>
         </table>
-        {showDelete && <DeleteConfirmationModal show = {showDelete} handleClose = {handleClose} productData={productData} closeDeleteModal={closeDeleteModal}/>}
-        {showEdit && <EditModal show = {showEdit} productDetails={productDetails}/>}
+        {showDelete && <DeleteConfirmationModal show = {showDelete} handleClose = {handleClose} productData={productData} closeDeleteModal={closeDeleteModal} changeDataDeleteOrEdit={changeDataDeleteOrEdit}/>}
+        {showEdit && <EditModal show = {showEdit} productDetails={productDetails} changeDataDeleteOrEdit={changeDataDeleteOrEdit} closeEditModal={closeEditModal}/>}
       </div>
      
     );

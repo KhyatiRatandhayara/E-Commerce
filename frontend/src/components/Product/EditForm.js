@@ -2,14 +2,32 @@ import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 
 import ProductService from "../../services/product.service";
-export const EditForm = ({productDetails}) => {
+export const EditForm = ({productDetails,changeDataDeleteOrEdit, closeEditModal}) => {
+  const [editProduct, setEditProduct] = useState({
+    productId : productDetails.productId,
+    productname: productDetails.productname,
+    price: productDetails.price,
+    stock: productDetails.stock,
+    description: productDetails.description,
+  });
 
-    console.log(productDetails);
     const onChangeHandler = (e) => {
-          console.log(e.target.value);
+      const {name, value} = e.target;
+      setEditProduct({
+        ...editProduct,
+        [name] : value
+      })
+      
+    }
+    const editSubmitHandler = (e) => {
+      e.preventDefault();
+      ProductService.editProduct(editProduct).then((response) => {
+        closeEditModal();
+        changeDataDeleteOrEdit();
+      });
     }
     return (
-        <form>
+        <form onSubmit={editSubmitHandler}>
         <div className="columns is-mobile is-centered">
           <div className="column is-half">
             <div className="field">
@@ -18,7 +36,7 @@ export const EditForm = ({productDetails}) => {
                 className="input"
                 type="text"
                 name="productname"
-                value={productDetails.name}
+                value={editProduct.productname}
                 onChange= {onChangeHandler}
               />
             </div>
@@ -28,7 +46,7 @@ export const EditForm = ({productDetails}) => {
                 className="input"
                 type="number"
                 name="price"
-                value={productDetails.price}
+                value={editProduct.price}
                 onChange= {onChangeHandler}
               />
             </div>
@@ -38,7 +56,7 @@ export const EditForm = ({productDetails}) => {
                 className="input"
                 type="number"
                 name="stock"
-                value={productDetails.stock}
+                value={editProduct.stock}
                 onChange= {onChangeHandler}
               />
             </div>
@@ -50,7 +68,7 @@ export const EditForm = ({productDetails}) => {
                 rows="2"
                 style={{ resize: "none" }}
                 name="description"
-                value={productDetails.description}
+                value={editProduct.description}
                 onChange= {onChangeHandler}
               />
             </div>

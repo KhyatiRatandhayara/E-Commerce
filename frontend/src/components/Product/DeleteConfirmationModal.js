@@ -5,11 +5,12 @@ import './DeleteConfirmationModal.css';
 
 import ProductService from "../../services/product.service";
 
-export const DeleteConfirmationModal = ({show, handleClose, productData, closeDeleteModal}) => {
+export const DeleteConfirmationModal = ({show, handleClose, productData, closeDeleteModal, changeDataDeleteOrEdit}) => {
 
   const productDeleteHandler = (productId) => {
      ProductService.deleteProduct(productId).then((response) => {
       closeDeleteModal();
+      changeDataDeleteOrEdit();
      })
   }
     return (

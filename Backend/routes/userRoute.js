@@ -1,7 +1,7 @@
 import express from 'express';
 import invalidUrl from "../controllers/commonController.js";
 import {registerUser,signInUser,logoutUser,authChecker} from "../controllers/userController.js";
-import {createProduct, getAllProducts, deleteProduct, editProductData} from "../controllers/productController.js";
+import {createProduct, getAllProducts, deleteProduct, getEditProductData, EditProduct} from "../controllers/productController.js";
 import checkUsernameOrEmailExist from "../middleware/verifySignup.js";
 
 const router = express.Router();
@@ -21,7 +21,9 @@ router.post('/addproduct', createProduct);
 
 router.get('/allproducts', getAllProducts);
 
-router.get('/editproductdata/:id', editProductData);
+router.get('/editproductdata/:id', getEditProductData);
+
+router.put('/editproduct/:id', EditProduct);
 
 router.delete('/deleteproduct/:id', deleteProduct);
 
