@@ -25,7 +25,6 @@ const registerUser = async (req, res) => {
 //login
 const signInUser = async (req, res) => {
 
-  console.log(req.body);
   const { email, password } = req.body;
 
     let isUserSignUp = await User.findOne({
@@ -40,8 +39,7 @@ const signInUser = async (req, res) => {
     if(!await bcrypt.compare(password, isUserSignUp.password)){
       return res.status(400).send({message : "Authentication failed.Please enter valid password."});
     }
-
-    const sessUser = { id: isUserSignUp._id }
+    const sessUser = { id: isUserSignUp._id , isAdmin :isUserSignUp.isAdmin}
     req.session.user = sessUser;
 
     if(req.session.user){

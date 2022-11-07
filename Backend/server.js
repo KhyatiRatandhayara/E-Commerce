@@ -5,10 +5,13 @@ import dotenv from "dotenv";
 import cors from "cors";
 import sessions  from "express-session";
 import cookieParser from "cookie-parser";
+import path from 'path';
+import bodyParser from 'body-parser';
 dotenv.config();
 
 const PORT = process.env.PORT || 8080;
 const app = express();
+const __dirname = path.resolve();
 
  
 //Database connections
@@ -35,11 +38,19 @@ app.use(sessions({
     cookie: { maxAge: oneDay },
     resave: false 
 }));
+
 app.use(cookieParser());
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
+// app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({
+//     extended: false
+// }));
+app.use('/public',express.static('public'));
 app.use( '/', router);
+
+ 
 
 //server connection
 app.listen(PORT, () => {

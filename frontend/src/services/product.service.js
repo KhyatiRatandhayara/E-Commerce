@@ -2,13 +2,21 @@ import axios from "axios";
 
 const API_URL = "http://localhost:8080/";
 
-const createProduct = (product) => {
-  const { productname, price, stock, description } = { ...product };
-  return axios.post(API_URL + "addproduct", {
-    productname,
-    price,
-    stock,
-    description,
+const createProduct = (formData) => {
+
+//   for (var key of formData.entries()) {
+//     console.log(key[0] + ', ' + key[1]);
+// }
+
+  const headers = {
+    "Content-Type": "multipart/form-data" 
+  }
+  
+  // const { productname, price, stock, description ,file} = { ...formData };
+
+  // console.log();
+  return axios.post(API_URL + "addproduct",formData,{
+    headers: headers
   });
 };
 

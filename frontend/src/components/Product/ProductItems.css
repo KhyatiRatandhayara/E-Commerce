@@ -2,5 +2,20 @@
     border: none;
     background-color: #212529 !important;
     color: #fff;
+    margin-top: 32px;
+    margin-left: 20px
     
+}
+.editproductbtn {
+    border: none;
+    background-color: #212529 !important;
+    color: #fff;
+    margin-right: 17px
+}
+.label_search {
+    margin-left: 71.5%;
+    
+}
+.product_table {
+    border: 1px solid #dbdbdb;
 }

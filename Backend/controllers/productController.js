@@ -1,14 +1,43 @@
+import multer from "multer";
 import Product from "../models/product.js";
+
+
+ //Configuration for Multer
+ const multerStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "public");
+  },
+  filename: (req, file, cb) => {
+    const ext = file.mimetype.split("/")[1];
+    cb(null, `images/${file.fieldname}-${Date.now()}.${ext}`);
+  },
+});
+
+const multerFilter = (req, file, cb) => {
+  if(!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+    return cb( new Error('Please upload a valid image file'))
+    } else {
+      cb(null, true);
+    }
+};
+
+//Calling the "multer" Function
+const uploadProductImage = multer({
+  storage: multerStorage,
+  fileFilter: multerFilter,
+});
 
 const createProduct = async (req, res) => {
   try {
     const { productname, price, stock, description } = req.body;
-
+    const url = req.protocol + '://' + req.get('host')
+    const productFileName = req.file ? req.file.filename : '';
     const newProduct = await Product.create({
       productname,
       price,
       stock,
       description,
+      productfile: url + '/public/' + productFileName
     });
     if (newProduct) {
       return res
@@ -17,7 +46,7 @@ const createProduct = async (req, res) => {
     }
   } catch (error) {
     return res.status(500).send({
-      error: `Error occured while creating product due to : ${error.message}`,
+      error: error.message,
     });
   }
 };
@@ -84,4 +113,5 @@ export {
   deleteProduct,
   getEditProductData,
   EditProduct,
+  uploadProductImage
 };

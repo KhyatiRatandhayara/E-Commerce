@@ -11,33 +11,101 @@ export const ProductForm = () => {
     productname: "",
     price: "",
     stock: "",
+    productfile : "",
     description: "",
   });
+  const [successful, setSuccessful] = useState(false);
+  const [message, setMessage] = useState("");
+
 
   const productChangeHandler = (e) => {
-    const { name, value } = e.target;
     setProduct({
       ...product,
-      [name]: value,
+      [e.target.name]: e.target.value,
     });
   };
+  const productImageChangeHandler = (e) => {
+    setProduct({
+      ...product,
+      productfile : e.target.files[0],
+    });
+  };
+  const validationHandler = () => {
+    if (!product.productname) {
+      setSuccessful(false);
+      setMessage('Please enter Product Name!');
+      return false;
+    }
+    if (product.productname.length < 3 ||product.productname.length > 20) {
+      setSuccessful(false);
+      setMessage("The productname must be between 3 and 20 characters.");
+      return false;
+    }
+    if (!product.price) {
+      setSuccessful(false);
+      setMessage('Please enter Product price!');
+      return false;
+    }
+    if (!product.stock) {
+      setSuccessful(false);
+      setMessage('Please enter available stock count for the product!');
+      return false;
+    }
+    if (!product.productfile) {
+      setSuccessful(false);
+      setMessage('Please upload Product Image!');
+      return false;
+    }
+    return true;
+  }
   const productSubmitHandler = (e) => {
     e.preventDefault();
-    ProductService.createProduct(product).then((response) => {
-      navigate("/products");
-    });
+    const isValid = validationHandler();
+    if(isValid){
+      let formData = new FormData();
+      formData.append('file', product.productfile)
+      formData.append('productname', product.productname)
+      formData.append('price', product.price)
+      formData.append('stock', product.stock)
+      formData.append('description', product.description)
+     
+      ProductService.createProduct(formData).then(
+        (response) => {
+          setSuccessful(true);
+        navigate("/products");
+      },
+      (error) => {
+        const resMessage =
+          (error.response && error.response.data && error.response.data.message) || error.message || error.toString() ;
+          setMessage(resMessage);
+          setSuccessful(false);
+      });
+    }
   };
 
   return (
+   
     <div className="container mt-3">
       <h2 className="pageheading d-flex align-items-center justify-content-center mb-4">
         Add Product
       </h2>
       <form
         onSubmit={productSubmitHandler}
-        enctype="multipart/form-data"
+        encType="multipart/form-data"
         method="post"
       >
+          {message && (
+            <div className="form-group">
+              <div
+                className={
+                  successful ? "alert alert-success" : "alert alert-danger"
+                }
+                role="alert"
+              >
+                {message}
+              </div>
+            </div>
+          )}
         <div className="columns is-mobile is-centered">
           <div className="column is-one-third">
             <div className="field">
@@ -72,17 +140,17 @@ export const ProductForm = () => {
             </div>
             <div className="field">
               <label className="label">Product Image: </label>
-              <div class="file has-name">
-                <label class="file-label">
-                  <input class="file-input" type="file" name="resume" />
-                  <span class="file-cta">
-                    <span class="file-icon">
-                      <i class="fas fa-upload"></i>
+              <div className="file has-name">
+                <label className="file-label">
+                  <input className="file-input" type="file" name="productfile" onChange={productImageChangeHandler}/>
+                  <span className="file-cta">
+                    <span className="file-icon">
+                      <i className="fas fa-upload"></i>
                     </span>
-                    <span class="file-label">Choose a file…</span>
+                    <span className="file-label">Choose a file…</span>
                   </span>
-                  <span class="file-name">
-                    Screen Shot 2017-07-29 at 15.54.25.png
+                  <span className="file-name">
+                  {product.productfile.name}
                   </span>
                 </label>
               </div>

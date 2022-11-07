@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import DataTable from "react-data-table-component";
 import Button from 'react-bootstrap/Button';
 
 import "./ProductItems.css"
@@ -22,8 +23,24 @@ export const ProductItems = () => {
         productname: "",
         price: "",
         stock: "",
-        description: "",
+        productfile: "",
       });
+      const [filteredProduct, setFilteredProduct] = useState({
+        productname : '',
+        price: "",
+      });
+      const [searchData, setSearchData] = useState("");
+
+      const filterProducts = data.filter((product) => {
+        return product.productname.indexOf(filteredProduct.productname) > -1; // true
+      });
+
+      const filterHandler = (e) => {
+        setFilteredProduct({
+          productname : e.target.value
+        });
+        setSearchData(e.target.value);
+      }
 
     const handleClose = () => setShowDelete(false);
 
@@ -48,14 +65,20 @@ export const ProductItems = () => {
       }
       const editHandler = (productId)=> {
         ProductService.getEditProductDetail(productId).then((response) => {
-            const {productname, price, stock, description} = response.data;
-            setProductDetails({productId,productname, price, stock, description});
+            const {productname, price, stock, description,productfile } = response.data;
+            setProductDetails({productId,productname, price, stock, description,productfile});
             setShowEdit(true);
         });
       }
 
       const changeDataDeleteOrEdit = () => {
         setIsDataUpdated(data);
+      }
+      const onSearchClear = () => {
+        setSearchData('');
+        setFilteredProduct({
+          productname : ''
+        });
       }
 
     return (
@@ -68,9 +91,23 @@ export const ProductItems = () => {
             <div className="float-end mb-2">
                 <a className="btn btn-success addproductbtn" href="/addproduct">Add Product</a>
             </div>
+            <label className="label label_search">Product Search: </label>
+            <div className="float-end mb-2">
+            <button onClick={onSearchClear}  className="btn btn-secondary">X</button>
+            </div>
+            <div className="float-end mb-2">
+            <input
+                className="input"
+                type="text"
+                name="productFilter"
+                onChange={filterHandler}
+                value={searchData}
+              />
+            </div>
+          
         </div>
     </div>
-      <table className="table table-bordered">
+      <table className="table table-bordered product_table table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
       <thead>
         <tr>
             <th scope="col">Sr.No</th>
@@ -82,15 +119,19 @@ export const ProductItems = () => {
             </tr>
         </thead>
         <tbody>
-            {data.map((productItem, i) => (
+            {filterProducts.map((productItem, i) => (
                   <tr key={productItem._id}>
                     <td>{i+1}</td>
                     <td>{productItem.productname}</td>
                     <td>{productItem. price}</td>
                     <td>{productItem.stock}</td>
-                    <td>{productItem.description}</td>
                     <td>
-                    <button className="btn btn-success addproductbtn" onClick={() => editHandler(productItem._id)}> Edit </button>
+                    <figure className="image is-128x128">
+                    <img src={productItem.productfile} />
+                    </figure>
+                     </td>
+                    <td>
+                    <button className="btn btn-success editproductbtn" onClick={() => editHandler(productItem._id)}> Edit </button>
                     <Button variant="secondary" onClick={() => deleteHandler(productItem._id)}>Delete</Button>
                     </td>
                     </tr>
