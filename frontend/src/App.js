@@ -7,6 +7,7 @@ import { Login } from './components/SignupIn/Login';
 import { ProductItems } from './components/Product/ProductItems';
 import { Profile } from './components/SignupIn/Profile';
 import { ProductForm } from './components/Product/ProductForm';
+import { CartList } from './components/Cart/CartList';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route exact path="/products" element={<ProductItems/>} /> 
           <Route exact path="/profile" element={<Profile/>} /> 
           <Route exact path="/addproduct" element={<ProductForm/>} /> 
+          <Route exact path="/cart" element={<CartList/>} /> 
         </Routes>
         </BrowserRouter>
     )

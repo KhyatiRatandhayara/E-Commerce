@@ -5,6 +5,7 @@ import AuthService  from "../../services/auth.service";
 
 export const Header = () => {
   var authenticatedUser = localStorage.getItem("user");
+  var currentUser = JSON.parse(authenticatedUser);
 
   const logOut = () => {
     AuthService.logout();
@@ -30,11 +31,12 @@ export const Header = () => {
             Products
             </Link>
           </li>  
-          <li className="nav-item">
+          {!currentUser.isAdmin && <li className="nav-item">
             <Link to={"/cart"} className="nav-link">
             Cart
             </Link>
-          </li>     
+          </li>  }
+             
           <li className="nav-item">
             <Link to={"/login"} className="nav-link" onClick={logOut}>
             Logout

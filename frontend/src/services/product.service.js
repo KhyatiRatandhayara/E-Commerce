@@ -11,10 +11,6 @@ const createProduct = (formData) => {
   const headers = {
     "Content-Type": "multipart/form-data" 
   }
-  
-  // const { productname, price, stock, description ,file} = { ...formData };
-
-  // console.log();
   return axios.post(API_URL + "addproduct",formData,{
     headers: headers
   });
@@ -29,7 +25,6 @@ const deleteProduct = (productId) => {
 };
 
 const getEditProductDetail = (productId) => {
-  console.log(`${API_URL}editproductdata/${productId}`);
   return axios.get(`${API_URL}editproductdata/${productId}`);
 };
 
@@ -37,10 +32,17 @@ const editProduct = (productData) => {
   return axios
     .put(`${API_URL}editproduct/${productData.productId}`, productData)
     .then((response) => {
-      console.log(response.data);
       return response.data;
     });
 };
+
+const productAddToCart = (productId) => {
+    return axios.post(API_URL + "addtocart",productId);
+  };
+
+  const getAllCartData = (userData) => {
+    return axios.post(API_URL + "getcartdata",userData);
+  };
 
 const ProductService = {
   createProduct,
@@ -48,6 +50,8 @@ const ProductService = {
   deleteProduct,
   getEditProductDetail,
   editProduct,
+  productAddToCart,
+  getAllCartData
 };
 
 export default ProductService;

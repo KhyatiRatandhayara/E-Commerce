@@ -1,5 +1,6 @@
 import multer from "multer";
 import Product from "../models/product.js";
+import Cart from "../models/cart.js";
 
 
  //Configuration for Multer
@@ -90,9 +91,7 @@ const getEditProductData = async (req, res) => {
 
 const EditProduct = async (req, res) => {
   const productId = req.params.id;
-  console.log(req.body);
   // const { productname, price, stock, description } = req.body;
-  console.log("req.body", req.body);
   Product.findByIdAndUpdate(
     productId,
     { $set: req.body },
@@ -107,11 +106,50 @@ const EditProduct = async (req, res) => {
   );
 };
 
+const addToCart = async (req, res) => {
+  try {
+    const { productId, currentUser } = req.body;
+    const userId = currentUser.id;
+    const addToCart = await Cart.create({
+      product_id : productId,
+      user_id : userId
+    });
+
+    if (addToCart) {
+      return res
+        .status(200)
+        .send({ message: "Product successfully added to the cart."});
+    }
+   
+  } catch (error) {
+    return res.status(500).send({
+      error: error.message,
+    });
+  }
+};
+const getCartData = async (req, res) => {
+  try {
+    const userId = req.body.userId;
+    console.log(userId);
+    const cartData = await Cart.find({user_id: userId}).populate('product_id');
+   const cartProductDetails = cartData.map((data) =>data.product_id);
+    if(cartData){
+      return res.status(200).send(cartProductDetails);
+    }
+  } catch (error) {
+    return res.status(500).send({
+      error: error.message,
+    });
+  }
+};
+
 export {
   createProduct,
   getAllProducts,
   deleteProduct,
   getEditProductData,
   EditProduct,
-  uploadProductImage
+  uploadProductImage,
+  addToCart,
+  getCartData
 };

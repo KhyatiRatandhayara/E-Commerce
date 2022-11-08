@@ -40,6 +40,7 @@ const signInUser = async (req, res) => {
       return res.status(400).send({message : "Authentication failed.Please enter valid password."});
     }
     const sessUser = { id: isUserSignUp._id , isAdmin :isUserSignUp.isAdmin}
+    console.log(sessUser);
     req.session.user = sessUser;
 
     if(req.session.user){

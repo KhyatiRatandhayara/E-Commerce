@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import DataTable from "react-data-table-component";
 import Button from 'react-bootstrap/Button';
 
 import "./ProductItems.css"
@@ -7,14 +6,22 @@ import "./ProductItems.css"
 import ProductService from "../../services/product.service";
 import { DeleteConfirmationModal } from "./DeleteConfirmationModal";
 import { EditModal } from "./EditModal";
+import {AddToCart} from '../Cart/AddToCart.js';
 
 export const ProductItems = () => {
+
+
+    //Current User
+    var authenticatedUser = localStorage.getItem("user");
+    var currentUser = JSON.parse(authenticatedUser);
+
 
     const [data, getData] = useState([]);
     const [isDataUpdated, setIsDataUpdated] = useState([]);
 
     const [showDelete, setShowDelete] = useState(false);
     const [showEdit, setShowEdit] = useState(false);
+    const [showCartModal, setShowCartModal] = useState(false);
     const [productData, getProductData] = useState({
         productId : null
     })
@@ -30,9 +37,19 @@ export const ProductItems = () => {
         price: "",
       });
       const [searchData, setSearchData] = useState("");
+      // const [cartProduct, setCartProduct] = useState({
+      //      productId : null
+      // });
 
+    useEffect(() => {
+        ProductService.getAllProducts().then((response) => {
+            getData(response.data);
+        });
+      }, [isDataUpdated]);
+
+      
       const filterProducts = data.filter((product) => {
-        return product.productname.indexOf(filteredProduct.productname) > -1; // true
+        return product.productname.toLowerCase().indexOf(filteredProduct.productname.toLowerCase()) > -1; // true
       });
 
       const filterHandler = (e) => {
@@ -42,14 +59,8 @@ export const ProductItems = () => {
         setSearchData(e.target.value);
       }
 
-    const handleClose = () => setShowDelete(false);
-
-    useEffect(() => {
-        ProductService.getAllProducts().then((response) => {
-            getData(response.data);
-        });
-      }, [isDataUpdated]);
-
+       const handleClose = () => setShowDelete(false);
+       const handleCartClose = () => setShowCartModal(false);
 
       const deleteHandler = (productId) => {
         setShowDelete(true);
@@ -79,6 +90,22 @@ export const ProductItems = () => {
         setFilteredProduct({
           productname : ''
         });
+      }
+      const addToCartHandler = (productId) => {
+        ProductService.getEditProductDetail(productId).then((response) => {
+          const {productname, price, stock, description,productfile } = response.data;
+          setProductDetails({productId,productname, price, stock, description,productfile});
+          setShowCartModal(true);
+      });
+       
+        // setCartProduct({
+        //   productId
+        // })
+      //   ProductService.addToCart(productId).then((response) => {
+      //     const {productname, price, stock, description,productfile } = response.data;
+      //     setProductDetails({productId,productname, price, stock, description,productfile});
+      //     setShowEdit(true);
+      // });
       }
 
     return (
@@ -130,16 +157,21 @@ export const ProductItems = () => {
                     <img src={productItem.productfile} />
                     </figure>
                      </td>
+                  {currentUser.isAdmin ? 
                     <td>
                     <button className="btn btn-success editproductbtn" onClick={() => editHandler(productItem._id)}> Edit </button>
                     <Button variant="secondary" onClick={() => deleteHandler(productItem._id)}>Delete</Button>
+                    </td> :   <td>
+                    <Button variant="secondary" onClick={() => addToCartHandler(productItem._id)}>Add to Cart</Button>
                     </td>
+                    }
                     </tr>
             ))}
         </tbody>
         </table>
         {showDelete && <DeleteConfirmationModal show = {showDelete} handleClose = {handleClose} productData={productData} closeDeleteModal={closeDeleteModal} changeDataDeleteOrEdit={changeDataDeleteOrEdit}/>}
         {showEdit && <EditModal show = {showEdit} productDetails={productDetails} changeDataDeleteOrEdit={changeDataDeleteOrEdit} closeEditModal={closeEditModal}/>}
+        {showCartModal && <AddToCart show = {showCartModal} handleCartClose={handleCartClose} productDetails={productDetails}/>}
       </div>
      
     );
