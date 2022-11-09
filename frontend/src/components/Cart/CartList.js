@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
+import DataTable from 'react-data-table-component';
 import './CartList.css';
 
 import ProductService from "../../services/product.service";
+import { RemoveFromCart } from './RemoveFromCart';
 
 
 export const CartList = () => {
@@ -11,11 +13,71 @@ export const CartList = () => {
     var currentUser = JSON.parse(authenticatedUser);
 
     const[cartData, setCartData] = useState([]);
+    const[isDataUpdated, setIsDataUpdated] = useState([]);
+    const [searchData, setSearchData] = useState("");
+    const [showRemove, setShowRemove] = useState(false);
+    const [productData, setProductData] = useState({
+        productId : null
+    })
+
+    const[filteredProduct, setFilteredProduct] = useState({
+        productname : ''
+      });
+
     useEffect(() => {
         ProductService.getAllCartData({userId : currentUser.id}).then((response) => {
             setCartData(response.data);
-        },[cartData]);
-    });
+        });
+    },[isDataUpdated]);
+  
+ 
+    const filterProducts = cartData.filter((product) => {
+        return product.productname.toLowerCase().indexOf(filteredProduct.productname.toLowerCase()) > -1; // true
+      });
+  
+      const filterHandler = (e) => {
+        setFilteredProduct({
+          productname : e.target.value
+        });
+        setSearchData(e.target.value);
+      }
+      const onSearchClear = () => {
+        setSearchData('');
+        setFilteredProduct({
+          productname : ''
+        });
+      }
+
+      const removeCartHandler = (productId) => {
+        setShowRemove(true);
+        setProductData({
+            productId : productId
+        })
+        // setIsDataUpdated(cartData);
+     }
+     const handleClose = () =>  setShowRemove(false);
+     const changeRemoveData= () =>  setIsDataUpdated(cartData);
+
+     const columns = [
+        //    { name: 'Sr.No', selector: row => row.row._id ,omit : true},
+          { name: 'Product Name', selector: row => row.productname, },
+          { name: 'Product Price', selector: row => row.price },
+          { name: 'Quantity', selector: row => row.stock},
+          { cell: (row) => 
+            <figure className="image is-128x128">
+            <img src={row.productfile} alt="productimage"/>
+            </figure>,
+           name : 'Product Image',
+        },
+          { cell: (row) => 
+            <Button variant="secondary" onClick={() => removeCartHandler(row._id)}>Remove</Button>,
+           name : 'Action',
+           ignoreRowClick: true,
+            allowOverflow: true, 
+            button: true
+        },
+        { name: '	Product Image', selector: row => row.productfile ,omit : true},
+    ];
 
     return (
         <>
@@ -27,19 +89,24 @@ export const CartList = () => {
             </div>
             <label className="label search_label">Cart Search: </label>
             <div className="float-end mb-2">
-            <button className="btn btn-secondary">X</button>
+            <button className="btn btn-secondary" onClick={onSearchClear}>X</button>
             </div>
             <div className="float-end mb-2">
             <input
                 className="input"
                 type="text"
-                name="productFilter"
+                name="cartFilter"
+                value={searchData}
+                onChange={filterHandler}
               />
             </div>
           
         </div>
     </div>
-      <table className="table table-bordered product_table table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+    {/* data table example */}
+    <DataTable columns={columns} data={filterProducts} pagination={true} />;
+    {/* simple table example */}
+      {/* <table className="table table-bordered product_table table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
       <thead>
         <tr>
             <th scope="col">Sr.No</th>
@@ -51,28 +118,29 @@ export const CartList = () => {
             </tr>
         </thead>
         <tbody>
-            {cartData.map((product, i)=> (
-                <tr key={product._id}>
+            {filterProducts.length ? filterProducts.map((product, i)=> (
+                <tr key={i}>
                     <td>{i+1}</td>
                     <td>{product.productname}</td>
                     <td>{product.price}</td>
                     <td>{product.stock}</td>
                     <td>
                     <figure className="image is-128x128">
-                    <img src={product.productfile} />
+                    <img src={product.productfile} alt="productimage"/>
                     </figure>
                      </td>
                     <td>
-                    <Button variant="secondary">Delete</Button>
+                    <Button variant="secondary" onClick={() => removeCartHandler(product._id)}>Remove</Button>
                     </td> 
                     </tr>
-            )) || "nxvjv"}
+            )) : <tr className='is-centered'><td>No Results.</td></tr>}
         </tbody>
-        </table>
+        </table> */}
       </div>
         <div className="float-end mb-2">
-        <a className="btn btn-success addproductbtn payment">Proceed to Payment</a>
+        <button className="btn btn-success addproductbtn payment">Proceed to Payment</button>
         </div>
+        {showRemove && <RemoveFromCart show={showRemove} handleClose={handleClose} productData={productData} changeRemoveData={changeRemoveData}/>}
       </>
     );
 }

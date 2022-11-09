@@ -1,8 +1,17 @@
-import React, { useState, useRef} from "react";
+import React, { useState, useRef, useEffect} from "react";
+import { Navigate } from "react-router-dom";
 import AuthService  from "../../services/auth.service";
 
 
 export const Register = () => {
+
+  useEffect(() => {
+    const auth = localStorage.getItem('user');
+    console.log(auth);
+    if (auth) {
+        // Navigate("/")
+    }
+  }, []);
 
   const form = useRef();
   const [user, setUser] = useState({
@@ -80,6 +89,7 @@ export const Register = () => {
         );
       }
   };
+
 
   return (
     <div className="container mt-3">

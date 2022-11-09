@@ -142,6 +142,18 @@ const getCartData = async (req, res) => {
     });
   }
 };
+const removeFromCart = async (req, res) => {
+
+  const productId = req.params.id;
+
+   Cart.findOneAndDelete({ product_id: productId }, function (err) {
+    if(err) res.status(500).send({ message: "Could not remove Product from cart" });
+    res.status(200).send({
+      message: "Product removed from cart successfully!",
+    });
+  });
+  
+};
 
 export {
   createProduct,
@@ -151,5 +163,6 @@ export {
   EditProduct,
   uploadProductImage,
   addToCart,
-  getCartData
+  getCartData,
+  removeFromCart
 };

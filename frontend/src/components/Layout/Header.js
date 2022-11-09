@@ -1,4 +1,4 @@
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, Link, useNavigate } from "react-router-dom";
 import "./Header.css";
 
 import AuthService  from "../../services/auth.service";
@@ -6,9 +6,14 @@ import AuthService  from "../../services/auth.service";
 export const Header = () => {
   var authenticatedUser = localStorage.getItem("user");
   var currentUser = JSON.parse(authenticatedUser);
+  const navigate = useNavigate();
 
   const logOut = () => {
-    AuthService.logout();
+    AuthService.logout().then((response)=> {
+      if(response){
+        navigate('/login');
+      }
+    });
   };
   return (
     <>

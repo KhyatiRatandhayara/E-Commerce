@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Button from 'react-bootstrap/Button';
+import DataTable from 'react-data-table-component';
 
 import "./ProductItems.css"
 
@@ -97,16 +98,37 @@ export const ProductItems = () => {
           setProductDetails({productId,productname, price, stock, description,productfile});
           setShowCartModal(true);
       });
-       
-        // setCartProduct({
-        //   productId
-        // })
-      //   ProductService.addToCart(productId).then((response) => {
-      //     const {productname, price, stock, description,productfile } = response.data;
-      //     setProductDetails({productId,productname, price, stock, description,productfile});
-      //     setShowEdit(true);
-      // });
       }
+
+      const columns = [
+        //    { name: 'Sr.No', selector: row => row.row._id ,omit : true},
+          { name: 'Product Name', selector: row => row.productname, },
+          { name: 'Product Price', selector: row => row.price },
+          { name: 'Available Stock', selector: row => row.stock},
+          { cell: (row) => 
+            <figure className="image is-128x128">
+            <img src={row.productfile} alt="productimage"/>
+            </figure>,
+           name : 'Product Image',
+        },
+          { cell: (row) => 
+            <>
+                {currentUser.isAdmin ? 
+                    <td>
+                    <button className="btn btn-success editproductbtn" onClick={() => editHandler(row._id)}> Edit </button>
+                    <Button variant="secondary" onClick={() => deleteHandler(row._id)}>Delete</Button>
+                    </td> :   <td>
+                    <Button variant="secondary" onClick={() => addToCartHandler(row._id)}>Add to Cart</Button>
+                    </td>
+                    }
+            </>,
+           name : 'Action',
+           ignoreRowClick: true,
+            allowOverflow: true, 
+            button: true
+        },
+        { name: '	Product Image', selector: row => row.productfile ,omit : true},
+    ];
 
     return (
       <div className="container mt-3">
@@ -134,7 +156,8 @@ export const ProductItems = () => {
           
         </div>
     </div>
-      <table className="table table-bordered product_table table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+    <DataTable columns={columns} data={filterProducts} pagination={true} />;
+      {/* <table className="table table-bordered product_table table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
       <thead>
         <tr>
             <th scope="col">Sr.No</th>
@@ -146,15 +169,15 @@ export const ProductItems = () => {
             </tr>
         </thead>
         <tbody>
-            {filterProducts.map((productItem, i) => (
+          {filterProducts.length ? filterProducts.map((productItem, i) => (
                   <tr key={productItem._id}>
                     <td>{i+1}</td>
                     <td>{productItem.productname}</td>
-                    <td>{productItem. price}</td>
+                    <td>{productItem.price}</td>
                     <td>{productItem.stock}</td>
                     <td>
                     <figure className="image is-128x128">
-                    <img src={productItem.productfile} />
+                    <img src={productItem.productfile}  alt="productimage"/>
                     </figure>
                      </td>
                   {currentUser.isAdmin ? 
@@ -166,9 +189,9 @@ export const ProductItems = () => {
                     </td>
                     }
                     </tr>
-            ))}
+            )) : <tr><td>No Results.</td></tr>}
         </tbody>
-        </table>
+        </table> */}
         {showDelete && <DeleteConfirmationModal show = {showDelete} handleClose = {handleClose} productData={productData} closeDeleteModal={closeDeleteModal} changeDataDeleteOrEdit={changeDataDeleteOrEdit}/>}
         {showEdit && <EditModal show = {showEdit} productDetails={productDetails} changeDataDeleteOrEdit={changeDataDeleteOrEdit} closeEditModal={closeEditModal}/>}
         {showCartModal && <AddToCart show = {showCartModal} handleCartClose={handleCartClose} productDetails={productDetails}/>}

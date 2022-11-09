@@ -1,4 +1,6 @@
 import axios from "axios";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const API_URL = "http://localhost:8080/";
 
@@ -27,12 +29,10 @@ const register = (user) => {
       });
   };
 
-  const logout = () => {
+  const logout = () => { 
     localStorage.removeItem("user");
     return axios.post(API_URL + "logout").then((response) => {
-
-      console.log("logout");
-      window.location.reload();
+      // window.location.reload();
       return response.data;
     });
   };

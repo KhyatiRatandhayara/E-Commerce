@@ -14,13 +14,14 @@ function App() {
       <BrowserRouter>
       <Header />
        <Routes>
-          <Route exact path={"/"} element={<HomePage />} />
-          <Route exact path="/register" element={<Register/>} /> 
-          <Route exact path="/login" element={<Login/>} /> 
+       <Route exact path={"/"} element={<HomePage />} />
           <Route exact path="/products" element={<ProductItems/>} /> 
           <Route exact path="/profile" element={<Profile/>} /> 
           <Route exact path="/addproduct" element={<ProductForm/>} /> 
           <Route exact path="/cart" element={<CartList/>} /> 
+        <Route exact path="/register" element={<Register/>} /> 
+        <Route exact path="/login" element={<Login/>} /> 
+         
         </Routes>
         </BrowserRouter>
     )

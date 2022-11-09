@@ -44,6 +44,10 @@ const productAddToCart = (productId) => {
     return axios.post(API_URL + "getcartdata",userData);
   };
 
+  const deleteCartProduct = (productId) => {
+    return axios.delete(`${API_URL}deletecartproduct/${productId}`);
+  };
+
 const ProductService = {
   createProduct,
   getAllProducts,
@@ -51,7 +55,8 @@ const ProductService = {
   getEditProductDetail,
   editProduct,
   productAddToCart,
-  getAllCartData
+  getAllCartData,
+  deleteCartProduct
 };
 
 export default ProductService;

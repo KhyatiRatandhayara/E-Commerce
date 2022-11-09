@@ -48,7 +48,6 @@ export const Login = () => {
       AuthService.login(user).then(
         (response) => {
           navigate("/profile"); 
-          window.location.reload();
         },
         (error) => {
           const resMessage =
