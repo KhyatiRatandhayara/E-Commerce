@@ -102,9 +102,9 @@ export const ProductItems = () => {
 
       const columns = [
         //    { name: 'Sr.No', selector: row => row.row._id ,omit : true},
-          { name: 'Product Name', selector: row => row.productname, },
-          { name: 'Product Price', selector: row => row.price },
-          { name: 'Available Stock', selector: row => row.stock},
+          { name: 'Product Name', selector: row => row.productname,sortable: true},
+          { name: 'Product Price', selector: row => row.price,sortable: true, },
+          { name: 'Available Stock', selector: row => row.stock,sortable: true,},
           { cell: (row) => 
             <figure className="image is-128x128">
             <img src={row.productfile} alt="productimage"/>
@@ -114,12 +114,12 @@ export const ProductItems = () => {
           { cell: (row) => 
             <>
                 {currentUser.isAdmin ? 
-                    <td>
+                   <>
                     <button className="btn btn-success editproductbtn" onClick={() => editHandler(row._id)}> Edit </button>
-                    <Button variant="secondary" onClick={() => deleteHandler(row._id)}>Delete</Button>
-                    </td> :   <td>
+                    <Button variant="secondary" onClick={() => deleteHandler(row._id)}>Delete</Button></>
+                     :   
                     <Button variant="secondary" onClick={() => addToCartHandler(row._id)}>Add to Cart</Button>
-                    </td>
+                    
                     }
             </>,
            name : 'Action',
@@ -127,7 +127,6 @@ export const ProductItems = () => {
             allowOverflow: true, 
             button: true
         },
-        { name: '	Product Image', selector: row => row.productfile ,omit : true},
     ];
 
     return (
@@ -156,7 +155,7 @@ export const ProductItems = () => {
           
         </div>
     </div>
-    <DataTable columns={columns} data={filterProducts} pagination={true} />;
+    <DataTable columns={columns} data={filterProducts} pagination={true} />
       {/* <table className="table table-bordered product_table table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
       <thead>
         <tr>

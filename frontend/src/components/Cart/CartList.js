@@ -60,9 +60,9 @@ export const CartList = () => {
 
      const columns = [
         //    { name: 'Sr.No', selector: row => row.row._id ,omit : true},
-          { name: 'Product Name', selector: row => row.productname, },
-          { name: 'Product Price', selector: row => row.price },
-          { name: 'Quantity', selector: row => row.stock},
+          { name: 'Product Name', selector: row => row.productname, sortable: true, },
+          { name: 'Product Price', selector: row => row.price, sortable: true, },
+          { name: 'Quantity', selector: row => row.quantity, sortable: true,},
           { cell: (row) => 
             <figure className="image is-128x128">
             <img src={row.productfile} alt="productimage"/>
@@ -104,7 +104,7 @@ export const CartList = () => {
         </div>
     </div>
     {/* data table example */}
-    <DataTable columns={columns} data={filterProducts} pagination={true} />;
+    <DataTable columns={columns} data={filterProducts} pagination={true} />
     {/* simple table example */}
       {/* <table className="table table-bordered product_table table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
       <thead>

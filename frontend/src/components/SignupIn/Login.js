@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import "./Login.css";
@@ -7,6 +7,14 @@ import AuthService  from "../../services/auth.service";
 export const Login = () => {
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const auth = localStorage.getItem('user');
+    if (auth) {
+      navigate("/");
+    }
+  }, []);
+  
   const [user, setUser] = useState({
     email : "",
     password : "",

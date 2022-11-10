@@ -1,17 +1,17 @@
 import React, { useState, useRef, useEffect} from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import AuthService  from "../../services/auth.service";
 
 
 export const Register = () => {
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    const auth = localStorage.getItem('user');
-    console.log(auth);
-    if (auth) {
-        // Navigate("/")
-    }
-  }, []);
+    useEffect(() => {
+      const auth = localStorage.getItem('user');
+      if (auth) {
+        navigate("/");
+      }
+    }, []);
 
   const form = useRef();
   const [user, setUser] = useState({

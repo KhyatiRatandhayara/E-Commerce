@@ -108,14 +108,24 @@ const EditProduct = async (req, res) => {
 
 const addToCart = async (req, res) => {
   try {
-    const { productId, currentUser } = req.body;
-    const userId = currentUser.id;
+    const { productId, userId, quantity } = req.body;
+   
     const addToCart = await Cart.create({
       product_id : productId,
       user_id : userId
     });
 
-    if (addToCart) {
+    // console.log(addToCart);
+
+  const productQuantity = await Product.findOneAndUpdate(
+    { _id :productId},
+      { $set: {
+        quantity : quantity,
+      }  
+      },
+      { new: true }
+    );
+    if (addToCart && productQuantity) {
       return res
         .status(200)
         .send({ message: "Product successfully added to the cart."});
@@ -130,7 +140,6 @@ const addToCart = async (req, res) => {
 const getCartData = async (req, res) => {
   try {
     const userId = req.body.userId;
-    console.log(userId);
     const cartData = await Cart.find({user_id: userId}).populate('product_id');
    const cartProductDetails = cartData.map((data) =>data.product_id);
     if(cartData){

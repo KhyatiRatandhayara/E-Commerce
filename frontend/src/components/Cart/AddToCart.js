@@ -8,13 +8,32 @@ import ProductService from "../../services/product.service";
 export const AddToCart = ({show, handleCartClose, productDetails}) => {
 //Current User
 var authenticatedUser = localStorage.getItem("user");
-var currentUser = JSON.parse(authenticatedUser);
+var userId = JSON.parse(authenticatedUser).id;
 
+const [productQuantity, setProductQuantity] = useState(0);
+const [message, setMessage] = useState("");
+const [successful, setSuccessful] = useState(false);
+
+  const validationHandler = () => {
+  if(productQuantity < 1) {
+    setMessage('Please enter product quantity!');
+    setSuccessful(false);
+    return false;
+   }
+   return true;
+  }
 
   const addToCartHandler = () => {
-    ProductService.productAddToCart({productId : productDetails.productId,currentUser : currentUser}).then((response) => {
-      handleCartClose();
-  });
+    var isQuantity = validationHandler();
+    if(isQuantity){
+      ProductService.productAddToCart({productId : productDetails.productId,userId : userId, quantity : productQuantity}).then((response) => {
+        setSuccessful(true);
+        handleCartClose();
+    });
+    }
+  }
+  const productQuantityHandler = (e) => {
+    setProductQuantity(e.target.value);
   }
 
     return (
@@ -24,6 +43,18 @@ var currentUser = JSON.parse(authenticatedUser);
             <Modal.Title>Add to Cart</Modal.Title>
           </Modal.Header>
           <Modal.Body>
+          {message && (
+            <div className="form-group">
+              <div
+                className={
+                  successful ? "alert alert-success" : "alert alert-danger"
+                }
+                role="alert"
+              >
+                {message}
+              </div>
+            </div>
+          )}
           <table className="table">
             <tbody>
               <tr>
@@ -44,6 +75,18 @@ var currentUser = JSON.parse(authenticatedUser);
                 <figure className="image is-64x64">
                     <img src={productDetails.productfile} />
                  </figure>
+                </td>
+              </tr>
+              <tr>
+                <th>Product Quantity</th>
+                <td>
+                <input
+                className="input"
+                type="number"
+                name="quantity"
+                value={productQuantity}
+                onChange={productQuantityHandler}
+              />
                 </td>
               </tr>
             </tbody>

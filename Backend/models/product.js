@@ -4,6 +4,7 @@ var ProductSchema = new mongoose.Schema({
             productname: { type: String, required: true },
             price: {type: Number, required: true},
             stock: { type: Number, required: true },
+            quantity : {type: Number,default: 0},
             productfile: {
                 type: String,
                 required: [true, "Uploaded file must have a name"],
